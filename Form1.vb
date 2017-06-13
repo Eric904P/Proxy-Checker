@@ -42,14 +42,11 @@ Public Class Form1
             If d(1).IsAlive Then
                 MessageBox.Show("Please stop all threads first.")
                 Return False
-            Else
-                GoTo clear2
             End If
         Catch ex As Exception
 
         End Try
 
-clear2:
         proxies.Clear()
         l1.Clear()
         l2.Clear()
@@ -65,14 +62,11 @@ clear2:
             If d(1).IsAlive Then
                 MessageBox.Show("Please stop all threads first.")
                 Return False
-            Else
-                GoTo clearF
             End If
         Catch ex As Exception
 
         End Try
 
-clearF:
         ListBox1.Items.Clear()
         ListBox2.Items.Clear()
         Label1.Text = "Progress: 0/0 checked (0%)"
@@ -99,7 +93,11 @@ clearF:
     End Sub
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
-        If (ListBox1.Items.Count > 0) Then
+        If (ListBox2.Items.Count > 0) Then
+            Dim tempL As ArrayList
+            SyncLock l1Lock
+                tempL = l1
+            End SyncLock
             Dim fs As New SaveFileDialog
             fs.RestoreDirectory = True
             fs.Filter = "txt files (*.txt)|*.txt"
@@ -107,11 +105,13 @@ clearF:
             fs.ShowDialog()
             If Not (fs.FileName = Nothing) Then
                 Using sw As New StreamWriter(fs.FileName)
-                    For Each line As String In l1
+                    For Each line As String In tempL
                         sw.WriteLine(line)
                     Next
                 End Using
             End If
+        Else
+            MessageBox.Show("No working proxies to save!")
         End If
     End Sub
 
