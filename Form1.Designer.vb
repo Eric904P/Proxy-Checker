@@ -38,6 +38,7 @@ Partial Class Form1
         Me.Button2 = New System.Windows.Forms.Button()
         Me.Button5 = New System.Windows.Forms.Button()
         Me.ColorDialog1 = New System.Windows.Forms.ColorDialog()
+        Me.Button6 = New System.Windows.Forms.Button()
         CType(Me.TrackBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -52,11 +53,11 @@ Partial Class Form1
         '
         'Button3
         '
-        Me.Button3.Location = New System.Drawing.Point(324, 13)
+        Me.Button3.Location = New System.Drawing.Point(323, 271)
         Me.Button3.Name = "Button3"
         Me.Button3.Size = New System.Drawing.Size(98, 23)
         Me.Button3.TabIndex = 3
-        Me.Button3.Text = "Export Working"
+        Me.Button3.Text = "Save Working"
         Me.Button3.UseVisualStyleBackColor = True
         '
         'ProgressBar1
@@ -71,7 +72,7 @@ Partial Class Form1
         Me.Label1.AutoSize = True
         Me.Label1.Location = New System.Drawing.Point(9, 271)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(139, 13)
+        Me.Label1.Size = New System.Drawing.Size(154, 13)
         Me.Label1.TabIndex = 5
         Me.Label1.Text = "Progress: 0/0 checked (0.00%)"
         '
@@ -156,18 +157,28 @@ Partial Class Form1
         '
         'Button5
         '
-        Me.Button5.Location = New System.Drawing.Point(324, 271)
+        Me.Button5.Location = New System.Drawing.Point(324, 12)
         Me.Button5.Name = "Button5"
         Me.Button5.Size = New System.Drawing.Size(98, 23)
         Me.Button5.TabIndex = 14
         Me.Button5.Text = "Clear All"
         Me.Button5.UseVisualStyleBackColor = True
         '
+        'Button6
+        '
+        Me.Button6.Location = New System.Drawing.Point(219, 271)
+        Me.Button6.Name = "Button6"
+        Me.Button6.Size = New System.Drawing.Size(98, 23)
+        Me.Button6.TabIndex = 15
+        Me.Button6.Text = "Copy Working"
+        Me.Button6.UseVisualStyleBackColor = True
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(433, 298)
+        Me.Controls.Add(Me.Button6)
         Me.Controls.Add(Me.Button5)
         Me.Controls.Add(Me.Button2)
         Me.Controls.Add(Me.Label5)
@@ -203,4 +214,5 @@ Partial Class Form1
     Friend WithEvents Button2 As Button
     Friend WithEvents Button5 As Button
     Friend WithEvents ColorDialog1 As ColorDialog
+    Friend WithEvents Button6 As Button
 End Class

@@ -219,6 +219,17 @@ IndexInc:
         End If
     End Sub
 
+    Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
+        Dim clip As String = String.Empty
+        If l1.Count() > 0 Then
+            clip = String.Join(vbNewLine, l1.ToArray())
+            Clipboard.SetText(clip)
+            MessageBox.Show(l1.Count() & " proxies copied to clipboard!")
+        Else
+            MessageBox.Show("No proxies to copy!")
+        End If
+    End Sub
+
     Function performStep(bool As Boolean, proxy As String)
         If bool Then
             ListBox2.Invoke(Sub()
