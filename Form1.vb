@@ -2,11 +2,11 @@
 Imports System.Net
 Imports System.Threading
 Public Class Form1
-    Dim l1, l2 As New ArrayList
-    Dim proxies As New List(Of String)
+    'Dim l1, l2 As New ArrayList
+    Dim proxies, tmpProx, l1, l2 As New List(Of String)
     Dim count As Integer = 0
-    Dim index As Integer = 0
-    Dim curProx As String
+    Dim index As Integer = -1
+    Dim isBox As Boolean = False
     Dim d As New Dictionary(Of String, Thread)()
     Private curProxLock As Object = New Object
     Private indexLock As Object = New Object
@@ -52,7 +52,7 @@ Public Class Form1
         l2.Clear()
         count = 0
         index = 0
-        curProx = ""
+        tmpProx.Clear()
         d.Clear()
         Return True
     End Function
@@ -92,7 +92,7 @@ Public Class Form1
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
         If (ListBox2.Items.Count > 0) Then
-            Dim tempL As ArrayList
+            Dim tempL As List(Of String)
             SyncLock l1Lock
                 tempL = l1
             End SyncLock
@@ -151,35 +151,51 @@ Public Class Form1
     End Function
 
     Private Sub threadedProxyChecker()
-        While (index < (proxies.Count() - 1))
-            If curProx = proxies.Item(index) Then
-                GoTo IndexInc
-            Else
-                SyncLock curProxLock
-                    curProx = proxies.Item(index)
-                End SyncLock
-            End If
-            If l2.Contains(proxies.Item(index)) = False Then
-                If l1.Contains(proxies.Item(index)) = False Then
-                    If (checkProxy(proxies.Item(index))) Then
-                        SyncLock l1Lock
-                            performStep(True, proxies.Item(index))
-                            l1.Add(proxies.Item(index))
+        Dim counter As Integer = 0
+        For Each proxy As String In proxies
+            SyncLock curProxLock
+                If tmpProx.Contains(proxy) Then
+                    GoTo Skip
+                Else
+                    tmpProx.Add(proxy)
+                End If
+            End SyncLock
+            If Not l2.Contains(proxy) Then
+                If Not l1.Contains(proxy) Then
+                    If (checkProxy(proxy)) Then
+                        performStep(True, proxy)
+                        l1.Add(proxy)
+                        SyncLock curProxLock
+                            tmpProx.Remove(proxy)
                         End SyncLock
                     Else
-                        SyncLock l2Lock
-                            performStep(False, proxies.Item(index))
-                            l2.Add(proxies.Item(index))
+                        performStep(False, proxy)
+                        l2.Add(proxy)
+                        SyncLock curProxLock
+                            tmpProx.Remove(proxy)
                         End SyncLock
                     End If
                 End If
             End If
-IndexInc:
-            SyncLock indexLock
-                index = index + 1
-            End SyncLock
-        End While
-        clearVars()
+Skip:
+        Next
+        If proxies.Count() <= (l1.Count() + l2.Count()) Then
+            If Not isBox Then
+                SyncLock indexLock
+                    MessageBox.Show("Done checking!" & vbNewLine & l1.Count() & " working proxies")
+                    isBox = True
+                End SyncLock
+                Label5.Invoke(Sub()
+                                  Label5.Text = "Working: " & l1.Count()
+                                  Label5.Update()
+                              End Sub)
+                Label4.Invoke(Sub()
+                                  Label4.Text = "Unresponsive: " & l2.Count()
+                                  Label4.Update()
+                              End Sub)
+            End If
+        End If
+        Thread.CurrentThread.Abort()
     End Sub
 
     Private Sub stopThreads()
@@ -203,7 +219,7 @@ IndexInc:
     End Sub
 
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
-
+        isBox = False
         Dim threadCount As Integer = TrackBar1.Value
 
         For int As Integer = 1 To threadCount Step 1

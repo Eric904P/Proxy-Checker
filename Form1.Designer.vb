@@ -40,6 +40,7 @@ Partial Class Form1
         Me.ColorDialog1 = New System.Windows.Forms.ColorDialog()
         Me.Button6 = New System.Windows.Forms.Button()
         Me.Label6 = New System.Windows.Forms.Label()
+        Me.Label7 = New System.Windows.Forms.Label()
         CType(Me.TrackBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -187,11 +188,21 @@ Partial Class Form1
         Me.Label6.TabIndex = 16
         Me.Label6.Text = "Proxy Checker by Eric904P ©2017"
         '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(381, 277)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(39, 13)
+        Me.Label7.TabIndex = 17
+        Me.Label7.Text = Me.ProductVersion
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(433, 322)
+        Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Button6)
         Me.Controls.Add(Me.Button5)
@@ -231,4 +242,5 @@ Partial Class Form1
     Friend WithEvents ColorDialog1 As ColorDialog
     Friend WithEvents Button6 As Button
     Friend WithEvents Label6 As Label
+    Friend WithEvents Label7 As Label
 End Class
