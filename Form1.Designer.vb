@@ -24,7 +24,6 @@ Partial Class Form1
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.Button1 = New System.Windows.Forms.Button()
-        Me.ListBox1 = New System.Windows.Forms.ListBox()
         Me.Button3 = New System.Windows.Forms.Button()
         Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -44,26 +43,18 @@ Partial Class Form1
         '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(212, 13)
+        Me.Button1.Location = New System.Drawing.Point(220, 13)
         Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(110, 23)
+        Me.Button1.Size = New System.Drawing.Size(98, 23)
         Me.Button1.TabIndex = 0
         Me.Button1.Text = "Load Proxies"
         Me.Button1.UseVisualStyleBackColor = True
         '
-        'ListBox1
-        '
-        Me.ListBox1.FormattingEnabled = True
-        Me.ListBox1.Location = New System.Drawing.Point(12, 92)
-        Me.ListBox1.Name = "ListBox1"
-        Me.ListBox1.Size = New System.Drawing.Size(194, 147)
-        Me.ListBox1.TabIndex = 1
-        '
         'Button3
         '
-        Me.Button3.Location = New System.Drawing.Point(328, 13)
+        Me.Button3.Location = New System.Drawing.Point(324, 13)
         Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(93, 23)
+        Me.Button3.Size = New System.Drawing.Size(98, 23)
         Me.Button3.TabIndex = 3
         Me.Button3.Text = "Export Working"
         Me.Button3.UseVisualStyleBackColor = True
@@ -82,7 +73,7 @@ Partial Class Form1
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(139, 13)
         Me.Label1.TabIndex = 5
-        Me.Label1.Text = "Progress: 0/0 checked (0%)"
+        Me.Label1.Text = "Progress: 0/0 checked (0.00%)"
         '
         'TrackBar1
         '
@@ -102,9 +93,9 @@ Partial Class Form1
         '
         'Button4
         '
-        Me.Button4.Location = New System.Drawing.Point(16, 13)
+        Me.Button4.Location = New System.Drawing.Point(12, 13)
         Me.Button4.Name = "Button4"
-        Me.Button4.Size = New System.Drawing.Size(109, 23)
+        Me.Button4.Size = New System.Drawing.Size(98, 23)
         Me.Button4.TabIndex = 7
         Me.Button4.Text = "<< START >>"
         Me.Button4.UseVisualStyleBackColor = True
@@ -122,7 +113,7 @@ Partial Class Form1
         '
         Me.Label3.AutoSize = True
         Me.Label3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.Label3.Location = New System.Drawing.Point(90, 42)
+        Me.Label3.Location = New System.Drawing.Point(83, 42)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(27, 15)
         Me.Label3.TabIndex = 9
@@ -131,43 +122,43 @@ Partial Class Form1
         'ListBox2
         '
         Me.ListBox2.FormattingEnabled = True
-        Me.ListBox2.Location = New System.Drawing.Point(212, 92)
+        Me.ListBox2.Location = New System.Drawing.Point(12, 92)
         Me.ListBox2.Name = "ListBox2"
-        Me.ListBox2.Size = New System.Drawing.Size(209, 147)
+        Me.ListBox2.Size = New System.Drawing.Size(409, 147)
         Me.ListBox2.TabIndex = 10
         '
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(12, 74)
+        Me.Label4.Location = New System.Drawing.Point(217, 76)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(72, 13)
+        Me.Label4.Size = New System.Drawing.Size(75, 13)
         Me.Label4.TabIndex = 11
         Me.Label4.Text = "Unresponsive:"
         '
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(209, 74)
+        Me.Label5.Location = New System.Drawing.Point(9, 76)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(47, 13)
+        Me.Label5.Size = New System.Drawing.Size(50, 13)
         Me.Label5.TabIndex = 12
         Me.Label5.Text = "Working:"
         '
         'Button2
         '
-        Me.Button2.Location = New System.Drawing.Point(132, 13)
+        Me.Button2.Location = New System.Drawing.Point(116, 13)
         Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(75, 23)
+        Me.Button2.Size = New System.Drawing.Size(98, 23)
         Me.Button2.TabIndex = 13
         Me.Button2.Text = "Stop"
         Me.Button2.UseVisualStyleBackColor = True
         '
         'Button5
         '
-        Me.Button5.Location = New System.Drawing.Point(328, 271)
+        Me.Button5.Location = New System.Drawing.Point(324, 271)
         Me.Button5.Name = "Button5"
-        Me.Button5.Size = New System.Drawing.Size(93, 23)
+        Me.Button5.Size = New System.Drawing.Size(98, 23)
         Me.Button5.TabIndex = 14
         Me.Button5.Text = "Clear All"
         Me.Button5.UseVisualStyleBackColor = True
@@ -188,7 +179,6 @@ Partial Class Form1
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.ProgressBar1)
         Me.Controls.Add(Me.Button3)
-        Me.Controls.Add(Me.ListBox1)
         Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.TrackBar1)
         Me.Name = "Form1"
@@ -199,7 +189,6 @@ Partial Class Form1
 
     End Sub
     Friend WithEvents Button1 As System.Windows.Forms.Button
-    Friend WithEvents ListBox1 As System.Windows.Forms.ListBox
     Friend WithEvents Button3 As System.Windows.Forms.Button
     Friend WithEvents ProgressBar1 As ProgressBar
     Friend WithEvents Label1 As Label

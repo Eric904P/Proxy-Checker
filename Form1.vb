@@ -67,14 +67,12 @@ Public Class Form1
 
         End Try
 
-        ListBox1.Items.Clear()
         ListBox2.Items.Clear()
-        Label1.Text = "Progress: 0/0 checked (0%)"
+        Label1.Text = "Progress: 0/0 checked (0.00%)"
         Label4.Text = "Unresponsive:"
         Label5.Text = "Working:"
         ProgressBar1.Value = 0
 
-        ListBox1.Update()
         ListBox2.Update()
         Label1.Update()
         Label4.Update()
@@ -231,13 +229,10 @@ IndexInc:
                                 Label5.Update()
                             End Sub)
         Else
-            ListBox1.Invoke(Sub()
-                                ListBox1.Items.Add(proxy)
-                                ListBox1.TopIndex = ListBox1.Items.Count - 1
-                                ListBox1.Update()
-                                Label4.Text = "Unresponsive: " & l2.Count()
-                                Label4.Update()
-                            End Sub)
+            Label4.Invoke(Sub()
+                              Label4.Text = "Unresponsive: " & l2.Count()
+                              Label4.Update()
+                          End Sub)
         End If
 
         count = count + 1
@@ -248,7 +243,7 @@ IndexInc:
                             End Sub)
 
         Label1.Invoke(Sub()
-                          Dim percent As Integer = Math.Round(count / proxies.Count() * 100)
+                          Dim percent As Double = Math.Round((count / proxies.Count() * 100), 2, MidpointRounding.AwayFromZero)
                           Label1.Text = "Progress: " & count & "/" & proxies.Count() & " checked " & "(" & percent & "%)"
                           Label1.Update()
                       End Sub)
