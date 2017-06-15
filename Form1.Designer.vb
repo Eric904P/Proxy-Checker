@@ -39,6 +39,7 @@ Partial Class Form1
         Me.Button5 = New System.Windows.Forms.Button()
         Me.ColorDialog1 = New System.Windows.Forms.ColorDialog()
         Me.Button6 = New System.Windows.Forms.Button()
+        Me.Label6 = New System.Windows.Forms.Label()
         CType(Me.TrackBar1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
@@ -53,7 +54,7 @@ Partial Class Form1
         '
         'Button3
         '
-        Me.Button3.Location = New System.Drawing.Point(323, 271)
+        Me.Button3.Location = New System.Drawing.Point(116, 287)
         Me.Button3.Name = "Button3"
         Me.Button3.Size = New System.Drawing.Size(98, 23)
         Me.Button3.TabIndex = 3
@@ -78,12 +79,14 @@ Partial Class Form1
         '
         'TrackBar1
         '
+        Me.TrackBar1.LargeChange = 10
         Me.TrackBar1.Location = New System.Drawing.Point(111, 42)
         Me.TrackBar1.Maximum = 500
         Me.TrackBar1.Minimum = 1
         Me.TrackBar1.Name = "TrackBar1"
         Me.TrackBar1.Size = New System.Drawing.Size(310, 45)
         Me.TrackBar1.TabIndex = 6
+        Me.TrackBar1.TabStop = False
         Me.TrackBar1.TickFrequency = 10
         Me.TrackBar1.Value = 300
         '
@@ -113,7 +116,8 @@ Partial Class Form1
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.Label3.BackColor = System.Drawing.SystemColors.ControlLightLight
+        Me.Label3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.Label3.Location = New System.Drawing.Point(83, 42)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(27, 15)
@@ -166,18 +170,29 @@ Partial Class Form1
         '
         'Button6
         '
-        Me.Button6.Location = New System.Drawing.Point(219, 271)
+        Me.Button6.Location = New System.Drawing.Point(12, 287)
         Me.Button6.Name = "Button6"
         Me.Button6.Size = New System.Drawing.Size(98, 23)
         Me.Button6.TabIndex = 15
         Me.Button6.Text = "Copy Working"
         Me.Button6.UseVisualStyleBackColor = True
         '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.75!, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label6.Location = New System.Drawing.Point(275, 293)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(146, 12)
+        Me.Label6.TabIndex = 16
+        Me.Label6.Text = "Proxy Checker by Eric904P ©2017"
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(433, 298)
+        Me.ClientSize = New System.Drawing.Size(433, 322)
+        Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Button6)
         Me.Controls.Add(Me.Button5)
         Me.Controls.Add(Me.Button2)
@@ -215,4 +230,5 @@ Partial Class Form1
     Friend WithEvents Button5 As Button
     Friend WithEvents ColorDialog1 As ColorDialog
     Friend WithEvents Button6 As Button
+    Friend WithEvents Label6 As Label
 End Class
