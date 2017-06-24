@@ -19,6 +19,10 @@ Public Class Form1
 
     'Load proxies dialogue 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        If isRunning Then
+            MessageBox.Show("Please stop all threads first!")
+            Exit Sub
+        End If
         clearVars()
         Dim fo As New OpenFileDialog
         fo.RestoreDirectory = True
@@ -32,13 +36,13 @@ Public Class Form1
                     proxies.Add(sr.ReadLine())
                 End While
             End Using
-
-            ProgressBar1.Value = 0
-            Dim percent As Integer = Math.Round(0 / proxies.Count() * 100)
-            Label1.Text = "Progress: " & 0 & "/" & proxies.Count() & " checked " & "(" & percent & "%)"
-            Label1.Update()
         End If
         totalCount = proxies.Count()
+
+        ProgressBar1.Value = 0
+        Dim percent As Integer = Math.Round((totalCount - proxies.Count()) / totalCount * 100)
+        Label1.Text = "Progress: " & percent & "% checked " & "(" & proxies.Count() & " left)"
+        Label1.Update()
     End Sub
 
     'zeroes variables used by program
@@ -71,13 +75,11 @@ Public Class Form1
 
         End Try
 
-        ListBox2.Items.Clear()
-        Label1.Text = "Progress: 0/0 checked (0.00%)"
+        Label1.Text = "Progress: 0.00% checked (0 left)"
         Label4.Text = "Unresponsive:"
         Label5.Text = "Working:"
         ProgressBar1.Value = 0
 
-        ListBox2.Update()
         Label1.Update()
         Label4.Update()
         Label5.Update()
@@ -99,7 +101,7 @@ Public Class Form1
 
     'Save dialogue
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
-        If (ListBox2.Items.Count > 0) Then
+        If (l1.Count() > 0) Then
             Dim tempL As List(Of String)
             SyncLock l1Lock
                 tempL = l1
@@ -124,8 +126,8 @@ Public Class Form1
     'Thread count controller
     Private Sub TrackBar1_Scroll(sender As Object, e As EventArgs) Handles TrackBar1.Scroll
         ToolTip1.SetToolTip(TrackBar1, TrackBar1.Value.ToString())
-        Label3.Text = TrackBar1.Value
-        Label3.Update()
+        NumericUpDown1.Value = TrackBar1.Value
+        NumericUpDown1.Update()
     End Sub
 
     'test single proxy
@@ -173,27 +175,20 @@ Public Class Form1
             End SyncLock
             If (checkProxy(proxy)) Then
                 l1.Add(proxy)
-                'SyncLock l2Lock
-                ListBox2.Invoke(Sub()
-                                        ListBox2.Items.Add(proxy)
-                                    End Sub)
-                'End SyncLock
             Else
-                l2 = l2 + 1
+                l2 += 1
             End If
         End While
+        SyncLock l2Lock
+            thrdCnt = thrdCnt - 1
+        End SyncLock
         'check for job completion
-        If totalCount <= (l1.Count() + l2) Then
-            If Not isBox Then
-                SyncLock indexLock
-                    MessageBox.Show("Done checking!" & vbNewLine & l1.Count() & " working proxies")
-                    isBox = True
-                    isRunning = False
-                    isDone = True
-                End SyncLock
-            End If
+        If thrdCnt = 0 And Not isBox Then
+            MessageBox.Show("Done checking!" & vbNewLine & l1.Count() & " working proxies")
+            isBox = True
+            isRunning = False
+            isDone = True
         End If
-        thrdCnt = thrdCnt - 1
     End Sub
 
     'second Stop button controller 
@@ -209,6 +204,10 @@ Public Class Form1
 
     'Start button
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
+        If isRunning Then
+            MessageBox.Show("Program is already running!")
+            Exit Sub
+        End If
         isBox = False
         isRunning = True
         isDone = False
@@ -226,6 +225,10 @@ Public Class Form1
 
     'Clear button
     Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
+        If isRunning Then
+            MessageBox.Show("Please stop all threads first!")
+            Exit Sub
+        End If
         If clearFields() Then
             clearVars()
         End If
@@ -243,25 +246,26 @@ Public Class Form1
         End If
     End Sub
 
+    Private Sub NumericUpDown1_ValueChanged(sender As Object, e As EventArgs) Handles NumericUpDown1.ValueChanged
+        TrackBar1.Value = NumericUpDown1.Value
+        TrackBar1.Update()
+    End Sub
+
     'UI control thread
     Private Sub uiControler()
         Dim percent As Double = 0
         While Not isDone
-            'SyncLock l2Lock
-            ListBox2.Invoke(Sub()
-                                    ListBox2.TopIndex = ListBox2.Items.Count - 1
-                                    ListBox2.Update()
-                                    Label5.Text = "Working: " & l1.Count()
-                                    Label5.Update()
-                                End Sub)
-            'End SyncLock
+            Label5.Invoke(Sub()
+                              Label5.Text = "Working: " & l1.Count()
+                              Label5.Update()
+                          End Sub)
             Label4.Invoke(Sub()
                               Label4.Text = "Unresponsive: " & l2
                               Label4.Update()
                           End Sub)
-            percent = Math.Round(((l1.Count() + l2) / totalCount * 100), 2, MidpointRounding.AwayFromZero)
+            percent = Math.Round(((totalCount - proxies.Count()) / totalCount * 100), 2, MidpointRounding.AwayFromZero)
             Label1.Invoke(Sub()
-                              Label1.Text = "Progress: " & (l1.Count() + l2) & "/" & totalCount & " checked " & "(" & percent & "%)"
+                              Label1.Text = "Progress: " & percent & "% checked " & "(" & proxies.Count() & " left)"
                               Label1.Update()
                           End Sub)
             ProgressBar1.Invoke(Sub()
@@ -270,9 +274,11 @@ Public Class Form1
                                 End Sub)
             Label7.Invoke(Sub()
                               Label7.Text = thrdCnt
+
                               Label7.Update()
                           End Sub)
-            Threading.Thread.Sleep(10)
+            uiCtrl.Sleep(1)
+            'Thread.Sleep(1)
         End While
     End Sub
 
