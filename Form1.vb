@@ -3,16 +3,21 @@ Imports System.Net
 Imports System.Threading
 Public Class Form1
     'Dim l1, l2 As New ArrayList
-    Dim proxies, tmpProx, l1, l2 As New List(Of String)
-    Dim count As Integer = 0
-    Dim index As Integer = -1
+    Dim proxies, l1 As New List(Of String)
+    Dim l2 As Integer = 0
+    Dim totalCount As Integer = 0
+    Dim thrdCnt As Integer = 0
     Dim isBox As Boolean = False
+    Dim isDone As Boolean = True
     Dim d As New Dictionary(Of String, Thread)()
     Private curProxLock As Object = New Object
-    Private indexLock As Object = New Object
     Private l1Lock As Object = New Object
     Private l2Lock As Object = New Object
+    Private indexLock As Object = New Object
+    Private uiCtrl As Thread = New Thread(AddressOf uiControler)
+    Private isRunning As Boolean = False
 
+    'Load proxies dialogue 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         clearVars()
         Dim fo As New OpenFileDialog
@@ -28,15 +33,15 @@ Public Class Form1
                 End While
             End Using
 
-            ProgressBar1.Maximum = proxies.Count()
-            ProgressBar1.Minimum = 0
-            ProgressBar1.Step = 1
-            Dim percent As Integer = Math.Round(count / proxies.Count() * 100)
-            Label1.Text = "Progress: " & count & "/" & proxies.Count() & " checked " & "(" & percent & "%)"
+            ProgressBar1.Value = 0
+            Dim percent As Integer = Math.Round(0 / proxies.Count() * 100)
+            Label1.Text = "Progress: " & 0 & "/" & proxies.Count() & " checked " & "(" & percent & "%)"
             Label1.Update()
         End If
+        totalCount = proxies.Count()
     End Sub
 
+    'zeroes variables used by program
     Private Function clearVars() As Boolean
         Try
             If d(1).IsAlive Then
@@ -49,14 +54,13 @@ Public Class Form1
 
         proxies.Clear()
         l1.Clear()
-        l2.Clear()
-        count = 0
-        index = 0
-        tmpProx.Clear()
+        l2 = 0
+        totalCount = 0
         d.Clear()
         Return True
     End Function
 
+    'clears UI
     Private Function clearFields() As Boolean
         Try
             If d(1).IsAlive Then
@@ -82,14 +86,18 @@ Public Class Form1
         Return True
     End Function
 
+    'Stop button controller
     Private Sub Button2_Click(sender As Object, e As EventArgs)
-        Try
-            stopThreads()
-        Catch ex As Exception
-
-        End Try
+        isRunning = False
+        Label1.Text = "Stopped!"
+        Label1.Update()
+        While thrdCnt > 0
+            isDone = False
+        End While
+        isDone = True
     End Sub
 
+    'Save dialogue
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
         If (ListBox2.Items.Count > 0) Then
             Dim tempL As List(Of String)
@@ -113,12 +121,14 @@ Public Class Form1
         End If
     End Sub
 
+    'Thread count controller
     Private Sub TrackBar1_Scroll(sender As Object, e As EventArgs) Handles TrackBar1.Scroll
         ToolTip1.SetToolTip(TrackBar1, TrackBar1.Value.ToString())
         Label3.Text = TrackBar1.Value
         Label3.Update()
     End Sub
 
+    'test single proxy
     Function checkProxy(proxy As String) As Boolean
         Dim myProxy As WebProxy
         Dim Temp As String
@@ -145,96 +155,83 @@ Public Class Form1
                 Return False
             End If
         Catch ex As Exception
-            Return False
+
         End Try
         Return False
     End Function
 
+    'thread action
     Private Sub threadedProxyChecker()
-        Dim counter As Integer = 0
-        For Each proxy As String In proxies
-            SyncLock curProxLock
-                If tmpProx.Contains(proxy) Then
-                    GoTo Skip
-                Else
-                    tmpProx.Add(proxy)
-                End If
-            End SyncLock
-            If Not l2.Contains(proxy) Then
-                If Not l1.Contains(proxy) Then
-                    If (checkProxy(proxy)) Then
-                        performStep(True, proxy)
-                        l1.Add(proxy)
-                        SyncLock curProxLock
-                            tmpProx.Remove(proxy)
-                        End SyncLock
-                    Else
-                        performStep(False, proxy)
-                        l2.Add(proxy)
-                        SyncLock curProxLock
-                            tmpProx.Remove(proxy)
-                        End SyncLock
-                    End If
-                End If
+        Dim proxy As String
+        While isRunning
+            If proxies.Count() = 0 Then
+                Exit While
             End If
-Skip:
-        Next
-        If proxies.Count() <= (l1.Count() + l2.Count()) Then
+            SyncLock curProxLock
+                proxy = proxies.Item(0)
+                proxies.RemoveAt(0)
+            End SyncLock
+            If (checkProxy(proxy)) Then
+                l1.Add(proxy)
+                'SyncLock l2Lock
+                ListBox2.Invoke(Sub()
+                                        ListBox2.Items.Add(proxy)
+                                    End Sub)
+                'End SyncLock
+            Else
+                l2 = l2 + 1
+            End If
+        End While
+        'check for job completion
+        If totalCount <= (l1.Count() + l2) Then
             If Not isBox Then
                 SyncLock indexLock
                     MessageBox.Show("Done checking!" & vbNewLine & l1.Count() & " working proxies")
                     isBox = True
+                    isRunning = False
+                    isDone = True
                 End SyncLock
-                Label5.Invoke(Sub()
-                                  Label5.Text = "Working: " & l1.Count()
-                                  Label5.Update()
-                              End Sub)
-                Label4.Invoke(Sub()
-                                  Label4.Text = "Unresponsive: " & l2.Count()
-                                  Label4.Update()
-                              End Sub)
             End If
         End If
-        Thread.CurrentThread.Abort()
+        thrdCnt = thrdCnt - 1
     End Sub
 
-    Private Sub stopThreads()
-        Dim thrdNum As Integer = 1
-        For Each t As KeyValuePair(Of String, Thread) In d
-            t.Value.Abort()
-            Label1.Text = "Stopping: " & thrdNum & "/" & d.Count()
-            Label1.Update()
-            thrdNum = thrdNum + 1
-        Next
+    'second Stop button controller 
+    Private Sub Button2_Click_1(sender As Object, e As EventArgs) Handles Button2.Click
+        isRunning = False
         Label1.Text = "Stopped!"
         Label1.Update()
+        While thrdCnt > 0
+            isDone = False
+        End While
+        isDone = True
     End Sub
 
-    Private Sub Button2_Click_1(sender As Object, e As EventArgs) Handles Button2.Click
-        Try
-            stopThreads()
-        Catch ex As Exception
-
-        End Try
-    End Sub
-
+    'Start button
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
         isBox = False
-        Dim threadCount As Integer = TrackBar1.Value
+        isRunning = True
+        isDone = False
+        thrdCnt = TrackBar1.Value
 
-        For int As Integer = 1 To threadCount Step 1
+        uiCtrl.IsBackground = True
+        uiCtrl.Start()
+
+        For int As Integer = 1 To thrdCnt Step 1
             d(int.ToString) = New Thread(AddressOf threadedProxyChecker)
             d(int.ToString).IsBackground = True
             d(int.ToString).Start()
         Next
     End Sub
 
+    'Clear button
     Private Sub Button5_Click(sender As Object, e As EventArgs) Handles Button5.Click
         If clearFields() Then
             clearVars()
         End If
     End Sub
 
+    'Copy to clipboard
     Private Sub Button6_Click(sender As Object, e As EventArgs) Handles Button6.Click
         Dim clip As String = String.Empty
         If l1.Count() > 0 Then
@@ -246,35 +243,37 @@ Skip:
         End If
     End Sub
 
-    Function performStep(bool As Boolean, proxy As String)
-        If bool Then
+    'UI control thread
+    Private Sub uiControler()
+        Dim percent As Double = 0
+        While Not isDone
+            'SyncLock l2Lock
             ListBox2.Invoke(Sub()
-                                ListBox2.Items.Add(proxy)
-                                ListBox2.TopIndex = ListBox2.Items.Count - 1
-                                ListBox2.Update()
-                                Label5.Text = "Working: " & l1.Count()
-                                Label5.Update()
-                            End Sub)
-        Else
+                                    ListBox2.TopIndex = ListBox2.Items.Count - 1
+                                    ListBox2.Update()
+                                    Label5.Text = "Working: " & l1.Count()
+                                    Label5.Update()
+                                End Sub)
+            'End SyncLock
             Label4.Invoke(Sub()
-                              Label4.Text = "Unresponsive: " & l2.Count()
+                              Label4.Text = "Unresponsive: " & l2
                               Label4.Update()
                           End Sub)
-        End If
-
-        count = count + 1
-
-        ProgressBar1.Invoke(Sub()
-                                ProgressBar1.PerformStep()
-                                ProgressBar1.Update()
-                            End Sub)
-
-        Label1.Invoke(Sub()
-                          Dim percent As Double = Math.Round((count / proxies.Count() * 100), 2, MidpointRounding.AwayFromZero)
-                          Label1.Text = "Progress: " & count & "/" & proxies.Count() & " checked " & "(" & percent & "%)"
-                          Label1.Update()
-                      End Sub)
-        Return True
-    End Function
+            percent = Math.Round(((l1.Count() + l2) / totalCount * 100), 2, MidpointRounding.AwayFromZero)
+            Label1.Invoke(Sub()
+                              Label1.Text = "Progress: " & (l1.Count() + l2) & "/" & totalCount & " checked " & "(" & percent & "%)"
+                              Label1.Update()
+                          End Sub)
+            ProgressBar1.Invoke(Sub()
+                                    ProgressBar1.Value = Math.Round(percent, 0)
+                                    ProgressBar1.Update()
+                                End Sub)
+            Label7.Invoke(Sub()
+                              Label7.Text = thrdCnt
+                              Label7.Update()
+                          End Sub)
+            Threading.Thread.Sleep(10)
+        End While
+    End Sub
 
 End Class

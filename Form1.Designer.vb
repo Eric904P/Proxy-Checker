@@ -67,6 +67,7 @@ Partial Class Form1
         Me.ProgressBar1.Location = New System.Drawing.Point(12, 245)
         Me.ProgressBar1.Name = "ProgressBar1"
         Me.ProgressBar1.Size = New System.Drawing.Size(409, 23)
+        Me.ProgressBar1.Step = 1
         Me.ProgressBar1.TabIndex = 4
         '
         'Label1
@@ -191,11 +192,11 @@ Partial Class Form1
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(381, 277)
+        Me.Label7.Location = New System.Drawing.Point(408, 280)
         Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(39, 13)
+        Me.Label7.Size = New System.Drawing.Size(13, 13)
         Me.Label7.TabIndex = 17
-        Me.Label7.Text = Me.ProductVersion
+        Me.Label7.Text = "0"
         '
         'Form1
         '
